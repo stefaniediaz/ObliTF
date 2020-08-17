@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import '../styles/registroUsuario.css';
+import { Button } from 'react-bootstrap';
 
-export const RegistroUsuario = () => {
+const RegistroUsuario = ({ history }) => {
     const [usuario, setUsuario] = useState('');
     const [password, setPassword] = useState('');
     
@@ -20,12 +21,12 @@ export const RegistroUsuario = () => {
     
         fetch('http://xpense.develotion.com/usuarios.php', requestOptions)
           .then(response => response.json())
-          .then(({ codigo, apiKey }) => {
-            if (codigo === 200) {
-              sessionStorage.setItem('apiKey', apiKey);
-              
+          .then(({ codigo }) => { //,apiKey
+            if (codigo === 200) {              
+              console.log("registro ok");
+              history.push('/login');
             } else {
-              sessionStorage.removeItem('apiKey');
+              console.log("ya existe usuario registrado con estos datos");
             }
           })
           .catch(error => console.log('error', error));
@@ -34,12 +35,15 @@ export const RegistroUsuario = () => {
     return (
         <div>
             <div className="login">
+              
       <form onSubmit={handleSubmit}>
+      <h2>Registrarse</h2><br></br>
         <label htmlFor="usuario">Usuario: </label>
         <input type="text" name="usuario" value={usuario} onChange={handleUsuario} />
         <label htmlFor="password">Password: </label>
-        <input type="text" name="password" value={password} onChange={handlePassword} />
-        <input type="submit" value="Registrarse" />
+        <input type="password" name="password" value={password} onChange={handlePassword} /><br></br>
+        <Button variant="outline-info" type="submit" disabled={!usuario} >Registrarse</Button>{' '}<br></br>
+        <Button variant="outline-info" type="button" onClick={() => history.push(`/login`)} >Volver</Button>{' '}             
       </form>
     </div>
         </div>

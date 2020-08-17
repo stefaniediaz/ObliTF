@@ -1,13 +1,23 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import '../styles/login.css';
+import Alert from 'react-bootstrap/Alert'
+import { Button } from 'react-bootstrap';
+
+
 
 const Login = ({ history }) => {
   const [usuario, setUsuario] = useState('');
   const [password, setPassword] = useState('');
 
+
+
   const handleUsuario = ({ target: { value } }) => setUsuario(value);
   const handlePassword = ({ target: { value } }) => setPassword(value);
+
+  function validateForm(){
+  return handleUsuario.length > 0 && handlePassword.length > 0; 
+  }
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -21,24 +31,41 @@ const Login = ({ history }) => {
     fetch('http://xpense.develotion.com/login.php', requestOptions)
       .then(response => response.json())
       .then(({ codigo, apiKey }) => {
+        validateForm();
         if (codigo === 200) {
           sessionStorage.setItem('apiKey', apiKey);
-          history.push('/Gastos');
-        } else {
+          history.push('/gastos');
+        } else {  
+          console.log("Usuario/contraseña incorrectos");
+         [           
+            'danger' 
+          ].map((idx) => (
+            <Alert key={idx}>
+              Usuario/Clave incorrectos!
+            </Alert>
+          )) 
+          
           sessionStorage.removeItem('apiKey');
+          
         }
       })
-      .catch(error => console.log('error', error));
+      .catch(error => JSON.stringify(error));
+      
   };
+
+  
 
   return (
     <div className="login">
       <form onSubmit={handleSubmit}>
+        <h2>Dashboard</h2>
         <label htmlFor="usuario">Usuario: </label>
         <input type="text" name="usuario" value={usuario} onChange={handleUsuario} />
         <label htmlFor="password">Password: </label>
-        <input type="text" name="password" value={password} onChange={handlePassword} />
-        <input type="submit" value="Ingresar" />
+        <input type="password" name="password" value={password} onChange={handlePassword} /><br></br>
+        
+        <Button variant="outline-info" type="submit" disabled={!usuario} >Ingresar</Button>{' '}<br></br>
+        <Button variant="outline-info" type="button" onClick={() => history.push(`/login/registro`)} >Registrarse</Button>{' '}             
       </form>
     </div>
   );
