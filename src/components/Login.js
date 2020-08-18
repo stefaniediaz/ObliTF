@@ -36,15 +36,8 @@ const Login = ({ history }) => {
           sessionStorage.setItem('apiKey', apiKey);
           history.push('/gastos');
         } else {  
-          console.log("Usuario/contraseña incorrectos");
-         [           
-            'danger' 
-          ].map((idx) => (
-            <Alert key={idx}>
-              Usuario/Clave incorrectos!
-            </Alert>
-          )) 
-          
+          console.log("Usuario/contraseña incorrectos");        
+          alert("Usuario/contraseña incorrectos");
           sessionStorage.removeItem('apiKey');
           
         }

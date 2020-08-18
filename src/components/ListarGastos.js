@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import Table from 'react-bootstrap/Table'
-import Button from 'react-bootstrap/Button'
+import{object} from 'prop-types';
+//import {withRouter} from 'react-router-dom';
 
 
-
-const ListarGastos = () => {
+const ListarGastos = ({history} ) => {
     const[gasto, setGasto] = useState();
     const[gastos, setGastos] = useState([]);
 
     useEffect(() => {
+      if(!sessionStorage.getItem('apiKey')){
+        history.push('/');
+      }
+    } , []
+    );
+
+
+    useEffect(() => {
         const requestOptions = {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json', apikey: sessionStorage.getItem('apiKey') },
+          headers: { 'Content-Type': 'application/json',
+           apikey: sessionStorage.getItem('apiKey'),
+           "Cache-control": "no-cache" },
         };
-    
-        fetch('http://xpense.develotion.com/gastos.php?id=7', requestOptions)
+
+        const url = 'http://xpense.develotion.com/gastos.php';
+        const usuarioId = gastos.map(({idUsuario}) => idUsuario);
+      
+        
+        fetch(`${url}?id=${usuarioId}`, requestOptions)
           .then(response => response.json())
           .then(({ codigo, gastos }) => {
             setGastos(gastos);
@@ -32,15 +45,13 @@ const ListarGastos = () => {
     return (  
 
         <div>
-            <h2>Listado de gastos</h2><br></br>       
-           
-
-            <select value={gasto} onChange={handleGasto}>
+          <select value={gasto} onChange={handleGasto}>
                 {gastos.map(({ id, nombre }) => (
-                    <option value={id}>{nombre}</option>
+                    <option value={id} key={id} >{nombre}</option>
             ))}
+        
       </select>
-      <h4>Monto total: {gasto}</h4>
+      
 
             
         </div>
@@ -49,6 +60,9 @@ const ListarGastos = () => {
     )
 }
 
-ListarGastos.propTypes = {};
+ListarGastos.propTypes = {
+ // history: object.isRequired,
+};
 
+//export default withRouter(ListarGastos);
 export default ListarGastos;

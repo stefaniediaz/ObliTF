@@ -1,12 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button } from 'react-bootstrap';
+import { withRouter } from 'react-router-dom';
 
-const Logout = () => {
+
+const Logout = (history) => {
+
     sessionStorage.removeItem('apiKey');
     return (
         <div>
-            <input type="button">Cerrar sesion</input>
+          
         </div>
     )
 }
@@ -15,4 +17,4 @@ Logout.propTypes = {
 
 }
 
-export default Logout
+export default withRouter(Logout) 
